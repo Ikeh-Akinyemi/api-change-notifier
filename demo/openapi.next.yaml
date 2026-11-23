@@ -1,0 +1,154 @@
+openapi: 3.0.3
+info:
+  title: Murmurly API
+  version: 1.15.0
+  description: Speech-to-text for podcasts, calls and classrooms.
+servers:
+  - url: https://api.murmurly.example
+paths:
+  /v1/transcripts:
+    post:
+      operationId: createTranscript
+      summary: Start a transcription job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - audio_url
+              properties:
+                audio_url:
+                  type: string
+                  format: uri
+                  description: Public URL of the audio file.
+                language:
+                  type: string
+                  description: BCP 47 language code. Detected automatically when omitted.
+                  example: en-US
+                diarization:
+                  type: boolean
+                  default: false
+                  description: Label each word with the speaker who said it.
+                webhook_url:
+                  type: string
+                  format: uri
+                  description: Called when the transcript is ready.
+      responses:
+        "201":
+          description: The transcription job was created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transcript"
+    get:
+      operationId: listTranscripts
+      summary: List transcripts, newest first
+      parameters:
+        - name: cursor
+          in: query
+          description: The next_cursor from the previous page. Omit it for the first page.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [queued, processing, completed, error]
+      responses:
+        "200":
+          description: A page of transcripts.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Transcript"
+                  next_cursor:
+                    type: string
+                    nullable: true
+  /v1/transcripts/{id}:
+    parameters:
+      - $ref: "#/components/parameters/TranscriptId"
+    get:
+      operationId: getTranscript
+      summary: Get a transcript
+      parameters:
+        - name: include
+          in: query
+          description: Set to words to return word-level timestamps with the transcript.
+          schema:
+            type: string
+            enum: [words]
+      responses:
+        "200":
+          description: The transcript.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transcript"
+    delete:
+      operationId: deleteTranscript
+      summary: Delete a transcript and its audio
+      responses:
+        "204":
+          description: Deleted.
+components:
+  parameters:
+    TranscriptId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: tr_8f2k1x
+  schemas:
+    Transcript:
+      type: object
+      required: [id, status, created_at]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, completed, error]
+        text:
+          type: string
+          nullable: true
+        language:
+          type: string
+        duration_seconds:
+          type: number
+        words:
+          type: array
+          description: Only present when the request sets include=words.
+          items:
+            $ref: "#/components/schemas/Word"
+        created_at:
+          type: string
+          format: date-time
+    Word:
+      type: object
+      required: [text, start, end]
+      properties:
+        text:
+          type: string
+        start:
+          type: number
+          description: Seconds from the start of the audio.
+        end:
+          type: number
+        speaker:
+          type: string
+          nullable: true

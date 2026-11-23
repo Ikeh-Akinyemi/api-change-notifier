@@ -1,0 +1,29 @@
+{
+  "name": "api-change-notifier",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "trigger dev",
+    "deploy": "trigger deploy",
+    "seed": "node --disable-warning=ExperimentalWarning scripts/seed.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.106",
+    "@ai-sdk/otel": "^1.0.177",
+    "@octokit/rest": "^22.0.1",
+    "@trigger.dev/sdk": "4.8.6",
+    "ai": "^7.0.177",
+    "resend": "^6.39.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@trigger.dev/build": "4.8.6",
+    "@types/node": "^24.19.2",
+    "trigger.dev": "4.8.6",
+    "typescript": "^5.9.3"
+  }
+}
