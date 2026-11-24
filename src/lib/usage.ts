@@ -39,7 +39,7 @@ let db: DatabaseSync | undefined;
 function database(): DatabaseSync {
   if (!db) {
     const file = process.env.USAGE_DB_PATH ?? path.join(process.cwd(), "data/usage.db");
-    if (!existsSync(file)) throw new Error(`no request logs at ${file}, run \`npm run seed\` first`);
+    if (!existsSync(file)) throw new Error(`no request logs at ${file}, run \`npm run seed\` and restart \`npm run dev\``);
     db = new DatabaseSync(file, { readOnly: true });
   }
   return db;

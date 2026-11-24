@@ -40,11 +40,11 @@ You need Node.js 22.18 or later, [oasdiff](https://github.com/oasdiff/oasdiff) o
 3. Copy `.env.example` to `.env` and fill it in.
 4. Run `npm install`, `npm run seed` and `npm run dev`. The first time, the CLI asks you to log in to Trigger.dev. Once it's running, the `github` endpoint appears on the **Webhooks** page of your Development environment.
 5. Open the `github` endpoint, choose **Generate secret** and copy it. Copy the **Webhook URL** too.
-6. In the GitHub repo, go to **Settings** > **Webhooks** > **Add webhook**. Paste the URL and the secret, set **Content type** to `application/json`, choose **Let me select individual events** and tick **Pull requests** only.
+6. In the GitHub repo, go to **Settings** > **Webhooks** > **Add webhook**. Paste the URL and the secret, set **Content type** to `application/json`, choose **Let me select individual events** and tick **Pull requests** only. GitHub sends a `ping` straight away, and it shows up as `FILTERED` on the endpoint's **Deliveries** tab, which is expected because only merged pull requests get through.
 
 ## Try it
 
-With `npm run dev` running:
+The seeded calls end on the day you ran `npm run seed`. If that was a few days ago, run it again and restart `npm run dev`, which copies `data/usage.db` when it starts. Then, with `npm run dev` running:
 
 ```bash
 git checkout -b move-word-timings
@@ -56,8 +56,6 @@ git push -u origin move-word-timings
 Open a PR for the branch and merge it. The change removes `GET /v1/transcripts/{id}/words`, renames `speaker_labels` to `diarization` and replaces `page` with a cursor. In the seeded logs, three customers break and three don't.
 
 A minute or so later the merged PR gets a comment, and a PR titled **Migration guide: ...** is open. Read the notes in its description, then merge it. The notes go to Resend's `delivered+...@resend.dev` test addresses, so you can see them in the Resend dashboard without emailing anyone.
-
-If a delivery shows up as `FILTERED` on the endpoint's **Deliveries** tab, check that the GitHub webhook's content type is `application/json`.
 
 ## Deploy
 

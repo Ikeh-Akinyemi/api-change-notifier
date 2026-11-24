@@ -2,7 +2,9 @@
 export const ENTRY_MARKER = "<!-- api-change-notifier: new entries go below this line -->";
 
 export function addGuideEntry(guide: string, entry: { date: string; title: string; prNumber: number; markdown: string }) {
-  const section = `## ${entry.date}: ${entry.title}\n\nChanged in #${entry.prNumber}.\n\n${entry.markdown.trim()}\n`;
+  // the model copies the guide's "Changed in #n." line now and then, and that line is added here anyway
+  const markdown = entry.markdown.trim().replace(/^Changed in #\d+\.\s*/i, "");
+  const section = `## ${entry.date}: ${entry.title}\n\nChanged in #${entry.prNumber}.\n\n${markdown}\n`;
 
   if (guide.includes(ENTRY_MARKER)) {
     return guide.replace(ENTRY_MARKER, `${ENTRY_MARKER}\n\n${section}`);
