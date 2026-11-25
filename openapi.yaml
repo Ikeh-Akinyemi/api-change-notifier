@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Murmurly API
-  version: 1.14.0
+  version: 1.15.0
   description: Speech-to-text for podcasts, calls and classrooms.
 servers:
   - url: https://api.murmurly.example
@@ -27,7 +27,7 @@ paths:
                   type: string
                   description: BCP 47 language code. Detected automatically when omitted.
                   example: en-US
-                speaker_labels:
+                diarization:
                   type: boolean
                   default: false
                   description: Label each word with the speaker who said it.
@@ -46,13 +46,11 @@ paths:
       operationId: listTranscripts
       summary: List transcripts, newest first
       parameters:
-        - name: page
+        - name: cursor
           in: query
-          description: Page number, starting at 1.
+          description: The next_cursor from the previous page. Omit it for the first page.
           schema:
-            type: integer
-            minimum: 1
-            default: 1
+            type: string
         - name: limit
           in: query
           schema:
@@ -77,16 +75,22 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Transcript"
-                  page:
-                    type: integer
-                  total:
-                    type: integer
+                  next_cursor:
+                    type: string
+                    nullable: true
   /v1/transcripts/{id}:
     parameters:
       - $ref: "#/components/parameters/TranscriptId"
     get:
       operationId: getTranscript
       summary: Get a transcript
+      parameters:
+        - name: include
+          in: query
+          description: Set to words to return word-level timestamps with the transcript.
+          schema:
+            type: string
+            enum: [words]
       responses:
         "200":
           description: The transcript.
@@ -100,24 +104,6 @@ paths:
       responses:
         "204":
           description: Deleted.
-  /v1/transcripts/{id}/words:
-    parameters:
-      - $ref: "#/components/parameters/TranscriptId"
-    get:
-      operationId: getTranscriptWords
-      summary: Get word-level timestamps for a transcript
-      responses:
-        "200":
-          description: Every word with its start and end time.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  words:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Word"
 components:
   parameters:
     TranscriptId:
@@ -144,6 +130,11 @@ components:
           type: string
         duration_seconds:
           type: number
+        words:
+          type: array
+          description: Only present when the request sets include=words.
+          items:
+            $ref: "#/components/schemas/Word"
         created_at:
           type: string
           format: date-time
