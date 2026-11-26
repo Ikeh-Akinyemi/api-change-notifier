@@ -57,6 +57,8 @@ Open a PR for the branch and merge it. The change removes `GET /v1/transcripts/{
 
 A minute or so later the merged PR gets a comment, and a PR titled **Migration guide: ...** is open. Read the notes in its description, then merge it. The notes go to Resend's `delivered+...@resend.dev` test addresses, so you can see them in the Resend dashboard without emailing anyone.
 
+PRs #1 and #2 in this repo are the production run shown in the blog post and the recording. `main` was reset to the original spec and guide after that run, so these steps work on a fresh clone.
+
 ## Deploy
 
 Run `npm run deploy`, add the same environment variables to the production environment in the dashboard, and point the GitHub webhook at the production endpoint URL with that endpoint's secret. The deploy build downloads oasdiff into the image (see `trigger.config.ts`) and ships `data/usage.db` with the code, so run `npm run seed` first.
