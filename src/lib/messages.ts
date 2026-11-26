@@ -1,4 +1,5 @@
 import type { Plan } from "./agent";
+import { config } from "./config";
 import type { SpecChange } from "./oasdiff";
 
 type PullRequestRef = { number: number; title: string };
@@ -21,8 +22,10 @@ export function docsPullRequestBody(input: { pr: PullRequestRef; plan: Plan; bre
         "| --- | --- |",
         ...plan.notes.map((n) => `| ${n.customer} | ${n.reason.replace(/\|/g, "\\|")} |`),
         "",
+        `Each note is sent with the subject "${config.noteSubject}" and a link to the guide.`,
+        "",
         plan.notes
-          .map((n) => `<details>\n<summary>Note to ${n.customer}</summary>\n\n**Subject:** ${n.subject}\n\n${n.body}\n\n</details>`)
+          .map((n) => `<details>\n<summary>Note to ${n.customer}</summary>\n\n${n.body}\n\n</details>`)
           .join("\n\n"),
       ].join("\n")
     : "### Who gets a note\n\nNobody. No customer called the affected endpoints in the usage window.";

@@ -11,14 +11,13 @@ export const sendMigrationNote = schemaTask({
   id: "send-migration-note",
   schema: z.object({
     customerId: z.string(),
-    subject: z.string(),
     body: z.string(),
     guideUrl: z.string().url(),
     // e.g. "acme/api#42", part of the resend idempotency key
     change: z.string(),
   }),
   retry: { maxAttempts: 5, factor: 2, minTimeoutInMs: 2000, maxTimeoutInMs: 60_000 },
-  run: async ({ customerId, subject, body, guideUrl, change }) => {
+  run: async ({ customerId, body, guideUrl, change }) => {
     // the address comes from our own records at send time, never from the model or the payload
     const customer = getCustomer(customerId);
     if (!customer) throw new AbortTaskRunError(`no customer with id ${customerId}`);
@@ -28,7 +27,7 @@ export const sendMigrationNote = schemaTask({
       {
         from: config.emailFrom,
         to: customer.ownerEmail,
-        subject,
+        subject: config.noteSubject,
         text: `${body}\n\nThe migration guide has the details: ${guideUrl}\n\nThe Murmurly API team`,
       },
       { idempotencyKey: `migration-note/${change}/${customerId}` }

@@ -35,7 +35,6 @@ export const MigrationPlan = z.object({
   notes: z.array(
     z.object({
       customerId: z.string(),
-      subject: z.string(),
       body: z.string(),
       reason: z.string(),
     })

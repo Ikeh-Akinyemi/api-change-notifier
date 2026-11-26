@@ -98,7 +98,6 @@ export const apiChangeNotifier = schemaTask({
           plan.notes.map((note) => ({
             payload: {
               customerId: note.customerId,
-              subject: note.subject,
               body: note.body,
               guideUrl,
               change: `${repo}#${pr.number}`,

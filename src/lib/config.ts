@@ -7,6 +7,8 @@ export const config = {
   usageWindowDays: Number(process.env.USAGE_WINDOW_DAYS ?? 30),
   model: process.env.NOTIFIER_MODEL ?? "claude-sonnet-5-5",
   emailFrom: process.env.EMAIL_FROM ?? "Murmurly API <onboarding@resend.dev>",
+  // set in code, not by the model, so it can never disagree with the note
+  noteSubject: process.env.NOTE_SUBJECT ?? "Action needed: a Murmurly API update affects your calls",
 };
 
 // docs PR branches get this prefix so the webhook task can tell them apart
