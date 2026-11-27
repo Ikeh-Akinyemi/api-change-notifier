@@ -39,8 +39,8 @@ You need Node.js 22.18 or later, [oasdiff](https://github.com/oasdiff/oasdiff) o
 2. Create a [fine-grained token](https://github.com/settings/personal-access-tokens/new) for that repo with read and write access to **Contents** and **Pull requests**. Create it from the account that owns the repo, because fine-grained tokens can't reach repos you're only a collaborator on.
 3. Copy `.env.example` to `.env` and fill it in.
 4. Run `npm install`, `npm run seed` and `npm run dev`. The first time, the CLI asks you to log in to Trigger.dev. Once it's running, the `github` endpoint appears on the **Webhooks** page of your Development environment.
-5. Open the `github` endpoint, choose **Generate secret** and copy it. Copy the **Webhook URL** too.
-6. In the GitHub repo, go to **Settings** > **Webhooks** > **Add webhook**. Paste the URL and the secret, set **Content type** to `application/json`, choose **Let me select individual events** and tick **Pull requests** only. GitHub sends a `ping` straight away, and it shows up as `FILTERED` on the endpoint's **Deliveries** tab, which is expected because only merged pull requests get through.
+5. Open the `github` endpoint and go to its **Settings** tab. Choose **Generate secret** and copy it, then copy the **Webhook URL** from the same tab.
+6. In the GitHub repo, go to **Settings** > **Webhooks** > **Add webhook**. Paste the URL and the secret, and set **Content type** to `application/json`. Choose **Let me select individual events**, untick **Pushes**, which GitHub ticks by default, and tick **Pull requests**. GitHub sends a `ping` straight away, and it shows up as `FILTERED` on the endpoint's **Deliveries** tab, which is expected because only merged pull requests get through.
 
 ## Try it
 
